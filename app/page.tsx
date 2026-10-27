@@ -1,319 +1,369 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
+import { useState } from 'react';
 
-type Restaurant = {
-  id: number;
-  name: string;
-  neighborhood: string;
-  cuisine: string;
-  note: string;
-  image: string;
-  tags: string[];
-  featured?: boolean;
-};
+const cuisines = [
+  { name: 'Seafood', icon: '🦞' },
+  { name: 'Pizza', icon: '🍕' },
+  { name: 'American', icon: '🍔' },
+  { name: 'Italian', icon: '🍝' },
+  { name: 'Mexican', icon: '🌮' },
+  { name: 'Asian', icon: '🍜' },
+];
 
-const sampleRestaurants: Restaurant[] = [
+const restaurants = [
   {
-    id: 1,
-    name: "Harbor & Hearth",
-    neighborhood: "Sample listing · South Coast",
-    cuisine: "New American",
-    note: "A cozy coastal-inspired neighborhood spot.",
+    name: 'The Tipsy Seagull',
+    cuisine: 'Seafood & American',
+    town: 'Fall River',
+    rating: '4.6',
+    price: '$$',
     image:
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1100&q=85",
-    tags: ["Dinner", "Cozy"],
-    featured: true,
+      'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=700&q=80',
+    note: 'Waterfront dining',
   },
   {
-    id: 2,
-    name: "Little Bay Kitchen",
-    neighborhood: "Sample listing · South Coast",
-    cuisine: "Seafood",
-    note: "A relaxed place for a fresh, casual meal.",
+    name: 'Harbor & Hearth',
+    cuisine: 'New American',
+    town: 'New Bedford',
+    rating: '4.8',
+    price: '$$',
     image:
-      "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1100&q=85",
-    tags: ["Lunch", "Seafood"],
-    featured: true,
+      'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=700&q=80',
+    note: 'A local favorite',
   },
   {
-    id: 3,
-    name: "The Olive Room",
-    neighborhood: "Sample listing · South Coast",
-    cuisine: "Mediterranean",
-    note: "Bright flavors and an easygoing atmosphere.",
+    name: 'Little Italy',
+    cuisine: 'Italian',
+    town: 'Westport',
+    rating: '4.5',
+    price: '$$',
     image:
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1100&q=85",
-    tags: ["Dinner", "Date night"],
-    featured: true,
-  },
-  {
-    id: 4,
-    name: "Daybreak Café",
-    neighborhood: "Sample listing · South Coast",
-    cuisine: "Café",
-    note: "A laid-back stop for coffee, breakfast, or a quick bite.",
-    image:
-      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1100&q=85",
-    tags: ["Breakfast", "Coffee"],
-  },
-  {
-    id: 5,
-    name: "Juniper Table",
-    neighborhood: "Sample listing · South Coast",
-    cuisine: "Italian",
-    note: "Comforting classics for an unhurried meal.",
-    image:
-      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1100&q=85",
-    tags: ["Dinner", "Comfort food"],
-  },
-  {
-    id: 6,
-    name: "Saltbox Tacos",
-    neighborhood: "Sample listing · South Coast",
-    cuisine: "Mexican",
-    note: "Casual, colorful, and easy to make your own.",
-    image:
-      "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?auto=format&fit=crop&w=1100&q=85",
-    tags: ["Casual", "Quick bite"],
+      'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=700&q=80',
+    note: 'Comfort food',
   },
 ];
 
-const categories = ["All spots", "Seafood", "Café", "Italian", "Mexican", "Mediterranean"];
-
-function PinIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" />
-      <circle cx="12" cy="10" r="2.3" />
-    </svg>
-  );
-}
-
-function SearchIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="10.8" cy="10.8" r="6.8" />
-      <path d="m16 16 4.2 4.2" />
-    </svg>
-  );
-}
-
-function HeartIcon({ filled = false }: { filled?: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={filled ? "heart-filled" : ""}>
-      <path d="M20.8 8.8c0 5.1-8.8 10.2-8.8 10.2S3.2 13.9 3.2 8.8A4.8 4.8 0 0 1 12 6.2a4.8 4.8 0 0 1 8.8 2.6Z" />
-    </svg>
-  );
-}
-
 export default function Home() {
-  const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All spots");
-  const [saved, setSaved] = useState<number[]>([]);
-  const [showSaved, setShowSaved] = useState(false);
+  const [search, setSearch] = useState('');
+  const [selectedCuisine, setSelectedCuisine] = useState('');
+  const [activeTab, setActiveTab] = useState('Home');
+  const [saved, setSaved] = useState<string[]>([]);
 
-  const filtered = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    return sampleRestaurants.filter((restaurant) => {
-      const matchesCategory =
-        activeCategory === "All spots" || restaurant.cuisine === activeCategory;
-      const matchesQuery =
-        !normalized ||
-        [restaurant.name, restaurant.cuisine, restaurant.neighborhood, restaurant.note, ...restaurant.tags]
-          .join(" ")
-          .toLowerCase()
-          .includes(normalized);
-      const matchesSaved = !showSaved || saved.includes(restaurant.id);
-      return matchesCategory && matchesQuery && matchesSaved;
-    });
-  }, [query, activeCategory, showSaved, saved]);
+  const visibleRestaurants = restaurants.filter((restaurant) => {
+    const query = search.toLowerCase();
 
-  const featured = sampleRestaurants.filter((restaurant) => restaurant.featured);
+    const matchesSearch =
+      restaurant.name.toLowerCase().includes(query) ||
+      restaurant.cuisine.toLowerCase().includes(query) ||
+      restaurant.town.toLowerCase().includes(query);
 
-  function toggleSaved(id: number) {
+    const matchesCuisine =
+      !selectedCuisine ||
+      restaurant.cuisine.toLowerCase().includes(selectedCuisine.toLowerCase()) ||
+      (selectedCuisine === 'American' &&
+        restaurant.cuisine.toLowerCase().includes('new american'));
+
+    const matchesSaved =
+      activeTab !== 'Saved' || saved.includes(restaurant.name);
+
+    return matchesSearch && matchesCuisine && matchesSaved;
+  });
+
+  function toggleSaved(name: string) {
     setSaved((current) =>
-      current.includes(id) ? current.filter((savedId) => savedId !== id) : [...current, id]
+      current.includes(name)
+        ? current.filter((item) => item !== name)
+        : [...current, name],
     );
   }
 
-  function scrollToExplore() {
-    document.getElementById("explore")?.scrollIntoView({ behavior: "smooth" });
-  }
-
   return (
-    <main>
-      <div className="announcement">
-        <span className="announcement-dot" />
-        A fresh way to find local favorites
-      </div>
-
-      <header className="site-header">
-        <a className="brand" href="#" aria-label="Southcoast Eats home">
+    <main className="app-shell">
+      <header className="topbar">
+        <a className="brand" href="#" onClick={() => setActiveTab('Home')}>
           <span className="brand-mark" aria-hidden="true">
-            <span />
-            <span />
-            <span />
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="18" r="9" fill="#E9AE65" />
+              <path
+                d="M5 29C11 24 17 34 24 29C31 24 37 34 43 29"
+                stroke="#247F83"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+              <path
+                d="M5 37C11 32 17 42 24 37C31 32 37 42 43 37"
+                stroke="#247F83"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+            </svg>
           </span>
-          <span className="brand-name">southcoast<span>eats</span></span>
+          <span className="brand-name">
+            southcoast<span> eats</span>
+          </span>
         </a>
-        <nav className="desktop-nav" aria-label="Main navigation">
-          <button className={!showSaved ? "nav-link active" : "nav-link"} onClick={() => { setShowSaved(false); scrollToExplore(); }}>
-            Discover
-          </button>
-          <button className={showSaved ? "nav-link active" : "nav-link"} onClick={() => { setShowSaved(true); scrollToExplore(); }}>
-            Saved <span className="saved-count">{saved.length}</span>
-          </button>
-        </nav>
-        <button className="header-cta" onClick={scrollToExplore}>
-          Explore spots <span aria-hidden="true">↗</span>
+
+        <button
+          className="town-button"
+          onClick={() => {
+            const town = window.prompt('Which SouthCoast town are you exploring?');
+            if (town) setSearch(town);
+          }}
+        >
+          <span aria-hidden="true">📍</span> Choose town
+          <span aria-hidden="true">⌄</span>
         </button>
       </header>
 
       <section className="hero">
         <div className="hero-copy">
-          <p className="eyebrow"><span /> GOOD FOOD, CLOSE TO HOME</p>
-          <h1>Find your<br /><em>next favorite.</em></h1>
-          <p className="hero-description">
-            Great places are closer than you think. Discover restaurants around the South Coast, one delicious find at a time.
-          </p>
-          <div className="hero-actions">
-            <button className="button-primary" onClick={scrollToExplore}>Explore restaurants <span aria-hidden="true">→</span></button>
-            <div className="location-note"><PinIcon /> The South Coast, Massachusetts</div>
-          </div>
-          <div className="hero-footnote">
-            <span className="footnote-line" />
-            Find a place for whatever you&apos;re craving.
-          </div>
+          <span className="eyebrow">GOOD FOOD. LOCAL FINDS.</span>
+          <h1>What’s good?</h1>
+          <p>Find great food around the SouthCoast.</p>
+
+          <form
+            className="search-box"
+            onSubmit={(event) => {
+              event.preventDefault();
+              setActiveTab('Explore');
+            }}
+          >
+            <span aria-hidden="true">⌕</span>
+            <input
+              aria-label="Search restaurants, cuisines, or towns"
+              placeholder="Restaurants, cuisines, towns..."
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+            {search && (
+              <button
+                type="button"
+                aria-label="Clear search"
+                onClick={() => setSearch('')}
+              >
+                ×
+              </button>
+            )}
+            <button type="submit" className="search-submit">
+              Find food
+            </button>
+          </form>
         </div>
-        <div className="hero-visual" aria-label="Restaurant dining room photograph">
-          <div className="hero-photo" />
-          <div className="photo-caption">
-            <span className="caption-icon">✳</span>
-            <span><strong>Your next great meal</strong><small>Starts with a little exploring.</small></span>
+
+        <div className="coastal-art" aria-hidden="true">
+          <div className="sun" />
+          <div className="dune dune-back" />
+          <div className="dune dune-front" />
+          <div className="sea sea-back" />
+          <div className="sea sea-front" />
+          <div className="lighthouse">
+            <div className="light-top" />
+            <div className="light-roof" />
+            <div className="light-room" />
+            <div className="light-body" />
+            <div className="light-base" />
           </div>
-          <div className="floating-stamp"><span>LOCAL</span><span>FINDS</span><span className="stamp-star">✳</span></div>
+          <div className="grass grass-one" />
+          <div className="grass grass-two" />
         </div>
       </section>
 
-      <section className="featured-section" aria-labelledby="featured-title">
+      <section className="location-row">
+        <button
+          className="location-card"
+          onClick={() => {
+            if (!navigator.geolocation) {
+              window.alert('Location is not available in this browser.');
+              return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+              () => window.alert('Location found! Nearby discovery is coming soon.'),
+              () => window.alert('Location wasn’t available. Choose a town instead.'),
+            );
+          }}
+        >
+          <span className="location-icon">⌖</span>
+          <span className="location-text">
+            <strong>Use my current location</strong>
+            <small>Discover places near you</small>
+          </span>
+          <span className="card-arrow">›</span>
+        </button>
+
+        <button
+          className="location-card"
+          onClick={() => {
+            const town = window.prompt(
+              'Enter a SouthCoast town, such as Fall River or Dartmouth.',
+            );
+            if (town) setSearch(town);
+          }}
+        >
+          <span className="location-icon town-icon">⌂</span>
+          <span className="location-text">
+            <strong>Choose a town instead</strong>
+            <small>Explore your favorite spots</small>
+          </span>
+          <span className="card-arrow">›</span>
+        </button>
+      </section>
+
+      <section className="cuisine-section">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">A GOOD PLACE TO START</p>
-            <h2 id="featured-title">A few spots to <em>love.</em></h2>
+            <span className="eyebrow">FOLLOW YOUR CRAVING</span>
+            <h2>I’m craving...</h2>
           </div>
-          <button className="text-link" onClick={scrollToExplore}>Explore all spots <span aria-hidden="true">→</span></button>
-        </div>
-        <div className="featured-grid">
-          {featured.map((restaurant, index) => (
-            <article className="featured-card" key={restaurant.id}>
-              <div className="card-image-wrap">
-                <img src={restaurant.image} alt="" className="card-image" />
-                <span className="sample-badge">Sample</span>
-                <button
-                  className={`save-button ${saved.includes(restaurant.id) ? "is-saved" : ""}`}
-                  onClick={() => toggleSaved(restaurant.id)}
-                  aria-label={saved.includes(restaurant.id) ? `Remove ${restaurant.name} from saved` : `Save ${restaurant.name}`}
-                >
-                  <HeartIcon filled={saved.includes(restaurant.id)} />
-                </button>
-              </div>
-              <div className="card-content">
-                <div className="card-kicker"><span>{restaurant.cuisine}</span><span className="kicker-dot">·</span><span>South Coast</span></div>
-                <h3>{restaurant.name}</h3>
-                <p>{restaurant.note}</p>
-                <button className="card-link" onClick={() => toggleSaved(restaurant.id)}>
-                  {saved.includes(restaurant.id) ? "Saved for later" : "Save for later"} <span aria-hidden="true">{saved.includes(restaurant.id) ? "✓" : "↗"}</span>
-                </button>
-              </div>
-              <span className="card-number">0{index + 1}</span>
-            </article>
-          ))}
-        </div>
-        <p className="sample-note">These are sample listings for the design preview, not verified restaurant records.</p>
-      </section>
-
-      <section className="explore-section" id="explore" aria-labelledby="explore-title">
-        <div className="section-heading explore-heading">
-          <div>
-            <p className="eyebrow">YOUR NEXT BITE IS OUT THERE</p>
-            <h2 id="explore-title">{showSaved ? "Your saved spots." : "What sounds good?"}</h2>
-          </div>
-          <p className="explore-intro">Search by name, cuisine, or craving.<br />Your next favorite is waiting.</p>
-        </div>
-        <div className="search-row">
-          <label className="search-box">
-            <SearchIcon />
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Try seafood, coffee, date night..."
-              aria-label="Search restaurants"
-            />
-            {query && <button className="clear-search" onClick={() => setQuery("")} aria-label="Clear search">×</button>}
-          </label>
-          <button className={`saved-filter ${showSaved ? "selected" : ""}`} onClick={() => setShowSaved(!showSaved)}>
-            <HeartIcon filled={showSaved} /> Saved spots
+          <button
+            className="text-link"
+            onClick={() => {
+              setSelectedCuisine('');
+              setActiveTab('Explore');
+            }}
+          >
+            All cuisines <span>→</span>
           </button>
         </div>
-        <div className="category-list" aria-label="Filter by cuisine">
-          {categories.map((category) => (
+
+        <div className="cuisine-list">
+          {cuisines.map((cuisine) => (
             <button
-              key={category}
-              className={`category-chip ${activeCategory === category ? "selected" : ""}`}
-              onClick={() => setActiveCategory(category)}
+              key={cuisine.name}
+              className={`cuisine-tile ${
+                selectedCuisine === cuisine.name ? 'selected' : ''
+              }`}
+              onClick={() => {
+                setSelectedCuisine((current) =>
+                  current === cuisine.name ? '' : cuisine.name,
+                );
+                setActiveTab('Explore');
+              }}
             >
-              {category}
+              <span className="cuisine-icon">{cuisine.icon}</span>
+              <span>{cuisine.name}</span>
             </button>
           ))}
         </div>
-        {filtered.length > 0 ? (
-          <div className="explore-grid">
-            {filtered.map((restaurant) => (
-              <article className="mini-card" key={restaurant.id}>
-                <div className="mini-image-wrap">
-                  <img src={restaurant.image} alt="" className="mini-image" />
+      </section>
+
+      <section className="featured-section">
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow">WORTH A LOOK</span>
+            <h2>
+              {activeTab === 'Saved'
+                ? 'Your saved spots'
+                : selectedCuisine
+                  ? `${selectedCuisine} spots`
+                  : search
+                    ? 'Search results'
+                    : 'Featured Near You'}
+            </h2>
+          </div>
+          <button
+            className="text-link"
+            onClick={() => setActiveTab('Explore')}
+          >
+            Explore all <span>→</span>
+          </button>
+        </div>
+
+        {visibleRestaurants.length > 0 ? (
+          <div className="restaurant-list">
+            {visibleRestaurants.map((restaurant) => (
+              <article className="restaurant-card" key={restaurant.name}>
+                <div className="restaurant-image-wrap">
+                  <img
+                    className="restaurant-image"
+                    src={restaurant.image}
+                    alt={`Dining atmosphere at ${restaurant.name}`}
+                  />
+                  <span className="restaurant-note">{restaurant.note}</span>
                   <button
-                    className={`save-button ${saved.includes(restaurant.id) ? "is-saved" : ""}`}
-                    onClick={() => toggleSaved(restaurant.id)}
-                    aria-label={saved.includes(restaurant.id) ? `Remove ${restaurant.name} from saved` : `Save ${restaurant.name}`}
+                    className={`favorite-button ${
+                      saved.includes(restaurant.name) ? 'is-saved' : ''
+                    }`}
+                    aria-label={
+                      saved.includes(restaurant.name)
+                        ? `Remove ${restaurant.name} from saved`
+                        : `Save ${restaurant.name}`
+                    }
+                    onClick={() => toggleSaved(restaurant.name)}
                   >
-                    <HeartIcon filled={saved.includes(restaurant.id)} />
+                    {saved.includes(restaurant.name) ? '♥' : '♡'}
                   </button>
                 </div>
-                <div className="mini-card-copy">
-                  <span className="mini-cuisine">{restaurant.cuisine}</span>
-                  <h3>{restaurant.name}</h3>
-                  <p>{restaurant.note}</p>
-                  <span className="mini-location"><PinIcon /> South Coast · Sample listing</span>
+
+                <div className="restaurant-info">
+                  <div className="restaurant-title-row">
+                    <h3>{restaurant.name}</h3>
+                    <span className="rating">
+                      <span>★</span> {restaurant.rating}
+                    </span>
+                  </div>
+                  <p className="restaurant-cuisine">{restaurant.cuisine}</p>
+                  <div className="restaurant-meta">
+                    <span>📍 {restaurant.town}</span>
+                    <span>{restaurant.price}</span>
+                  </div>
                 </div>
               </article>
             ))}
           </div>
         ) : (
           <div className="empty-state">
-            <span className="empty-icon">✳</span>
-            <h3>{showSaved && saved.length === 0 ? "Nothing saved just yet." : "No spots found."}</h3>
-            <p>{showSaved && saved.length === 0 ? "Tap the heart on a place you like and it’ll show up here." : "Try another search or choose a different cuisine."}</p>
-            <button className="text-link" onClick={() => { setQuery(""); setActiveCategory("All spots"); setShowSaved(false); }}>Show all spots →</button>
+            <span>🍽️</span>
+            <h3>No spots found just yet</h3>
+            <p>Try another search or explore a different cuisine.</p>
+            <button
+              onClick={() => {
+                setSearch('');
+                setSelectedCuisine('');
+                setActiveTab('Home');
+              }}
+            >
+              Start fresh
+            </button>
           </div>
         )}
+
+        <p className="sample-note">
+          Preview listings for design purposes. Restaurant details have not yet
+          been verified.
+        </p>
       </section>
 
-      <section className="closing-banner">
-        <div className="closing-mark">✳</div>
-        <div><p className="eyebrow">GOOD THINGS ARE AROUND THE CORNER</p><h2>Go find your <em>somewhere.</em></h2></div>
-        <button className="button-light" onClick={scrollToExplore}>Keep exploring <span aria-hidden="true">→</span></button>
-      </section>
-
-      <footer className="site-footer">
-        <a className="brand footer-brand" href="#" aria-label="Southcoast Eats home">
-          <span className="brand-mark" aria-hidden="true"><span /><span /><span /></span>
-          <span className="brand-name">southcoast<span>eats</span></span>
-        </a>
-        <p>Made for finding good food close to home.</p>
-        <span className="footer-region">SOUTH COAST, MA</span>
+      <footer className="footer">
+        <span className="footer-brand">Southcoast Eats</span>
+        <span>Good food, close to home.</span>
       </footer>
+
+      <nav className="bottom-nav" aria-label="Main navigation">
+        {[
+          { label: 'Home', icon: '⌂' },
+          { label: 'Explore', icon: '⌕' },
+          { label: 'Saved', icon: '♡' },
+          { label: 'Profile', icon: '○' },
+        ].map((item) => (
+          <button
+            key={item.label}
+            className={`nav-item ${
+              activeTab === item.label ? 'active' : ''
+            }`}
+            onClick={() => {
+              setActiveTab(item.label);
+              if (item.label === 'Profile') {
+                window.alert('Your profile will be available in a future update.');
+              }
+            }}
+          >
+            <span className="nav-icon">{item.icon}</span>
+            <span>{item.label}</span>
+          </button>
+        ))}
+      </nav>
     </main>
   );
 }
