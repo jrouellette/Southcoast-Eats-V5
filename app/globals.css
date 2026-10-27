@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap');
+:root{--navy:#12345d;--teal:#087b8a;--cream:#fffdf9;--muted:#7189a5;--line:#e7e5df;--gold:#f3b333}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+body{margin:0;background:var(--cream);color:var(--navy);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+button,input{font:inherit}button{cursor:pointer}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #7bc6ce;outline-offset:3px}
+.app-shell{width:100%;max-width:900px;min-height:100vh;margin:0 auto;padding:0 26px 105px;position:relative}
+.topbar{height:72px;display:grid;grid-template-columns:54px 1fr 54px;align-items:center;gap:8px;position:relative;isolation:isolate}
+.topbar:before{content:'';position:absolute;z-index:-1;inset:0 -8px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 80'%3E%3Cg fill='none' stroke='%23b8b89a' stroke-width='2.4' stroke-linecap='round' opacity='.42'%3E%3Cpath d='M4 78Q20 42 13 8M12 78Q35 48 41 19M17 78Q52 54 62 31M236 78Q219 40 229 9M229 78Q205 48 199 20M224 78Q190 54 179 31'/%3E%3C/g%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center bottom;background-size:100% 100%;pointer-events:none}
+.icon-button{border:0;background:transparent;color:var(--navy);display:grid;place-items:center;width:46px;height:46px;padding:9px}
+.icon-button svg{width:30px;height:30px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.brand{justify-self:center;display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--navy)}
+.brand-art{width:82px;height:48px;display:block}.brand-art svg{width:100%;height:100%}
+.brand-wordmark{font-family:'Playfair Display',serif;font-weight:800;font-size:26px;letter-spacing:-1.2px;white-space:nowrap}
+.brand-wordmark em{font-weight:700;color:#4b9898}
+.brand-wordmark small{display:block;text-align:center;font:700 8px 'DM Sans',sans-serif;letter-spacing:2.5px;margin-top:1px}
+.menu-popover{position:absolute;z-index:30;top:62px;left:22px;display:grid;gap:3px;padding:10px;border:1px solid var(--line);border-radius:13px;background:white;box-shadow:0 12px 30px #173b5d22}
+.menu-popover button{border:0;background:white;text-align:left;padding:10px 16px;border-radius:7px;color:var(--navy)}
+.menu-popover button:hover{background:#eaf3f6}
+.hero{height:420px;position:relative;overflow:hidden;border-radius:18px;background:#dce9e7;isolation:isolate}
+.hero-photo{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1800&q=90');background-position:center 48%;background-size:cover;z-index:-2}
+.hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,253,249,.02) 0%,rgba(255,253,249,.05) 25%,rgba(255,253,249,.8) 58%,rgba(255,253,249,.98) 100%);z-index:-1}
+.hero-copy{position:absolute;left:5.5%;right:5.5%;bottom:24px;text-align:center}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(43px,7vw,68px);letter-spacing:-1.8px;line-height:1.08;margin:0;color:#0c315e;font-weight:800}
+.hero-copy>p{font-size:clamp(15px,2.2vw,23px);color:#617d9e;margin:7px 0 21px}
+.search-box{height:62px;display:flex;align-items:center;gap:15px;background:#fff;border:1px solid #dbe1e8;border-radius:17px;padding:0 16px;box-shadow:0 4px 14px #12345d13;text-align:left}
+.search-symbol{width:27px;height:27px;flex-shrink:0;stroke:var(--navy);stroke-width:2.2;fill:none;stroke-linecap:round}
+.search-box input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--navy);font-size:15px}
+.search-box input::placeholder{color:#8095b0;opacity:1}
+.mic-button{width:49px;height:40px;flex-shrink:0;display:grid;place-items:center;border:0;border-left:1px solid #d9e0e7;background:transparent;color:var(--teal);padding-left:12px}
+.mic-button svg{width:28px;height:28px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.location-actions{display:grid;gap:13px;margin:18px 0 39px}
+.location-card{width:100%;min-height:83px;display:flex;align-items:center;gap:19px;border:0;border-radius:15px;text-align:left;padding:13px 22px;transition:filter .15s}
+.location-card:hover{filter:brightness(.98)}
+.primary-location{background:linear-gradient(105deg,#287e91,#397f8b);color:#fff}
+.town-location{background:#eaf2f5;color:var(--navy)}
+.location-symbol{width:48px;height:48px;flex-shrink:0;display:grid;place-items:center}
+.location-symbol svg{width:31px;height:31px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.primary-location .location-symbol svg{fill:currentColor;stroke:currentColor}
+.town-location .location-symbol svg{width:34px;height:34px;fill:var(--navy);stroke:var(--navy)}
+.location-copy{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.location-copy strong{font-family:'Playfair Display',serif;font-size:21px;line-height:1.25;font-weight:700}
+.location-copy small{font-size:14px;opacity:.9}.location-arrow{font-size:35px;font-weight:300;line-height:1}
+.cuisine-section{margin-bottom:43px}
+.section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.section-heading h2{font-family:'Playfair Display',serif;font-size:clamp(27px,4vw,37px);letter-spacing:-.7px;line-height:1.2;margin:0;color:var(--navy)}
+.section-link{border:0;background:transparent;color:#0876b7;font-size:15px;display:flex;align-items:center;gap:7px;white-space:nowrap;padding:6px 0}
+.section-link span{font-size:31px;font-weight:300;line-height:.8}
+.cuisine-list{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.cuisine-tile{min-width:0;min-height:126px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px solid #f0eee9;border-radius:15px;background:white;box-shadow:0 5px 16px #1d41630c;color:var(--navy);font-size:14px;font-weight:500;transition:transform .15s,border-color .15s,background .15s}
+.cuisine-tile:hover,.cuisine-tile.selected{border-color:#8dc4c9;background:#f1faf9;transform:translateY(-2px)}
+.cuisine-illustration{width:70px;height:70px;display:grid;place-items:center;border-radius:50%;background:#f9f7f1;font-size:43px;line-height:1}
+.featured-section{margin-bottom:35px}.featured-heading{align-items:flex-start;margin-bottom:17px}
+.featured-heading h2{font-size:clamp(27px,4vw,38px)}
+.featured-heading p{font-size:14px;color:var(--muted);margin:5px 0 0}
+.restaurant-scroller{display:grid;grid-auto-columns:minmax(270px,39%);grid-auto-flow:column;gap:15px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding:0 0 10px;scrollbar-width:none}
+.restaurant-scroller::-webkit-scrollbar{display:none}
+.restaurant-card{min-width:0;overflow:hidden;border:1px solid #eeece7;border-radius:16px;background:#fff;box-shadow:0 5px 15px #12345d0b;scroll-snap-align:start}
+.restaurant-image-wrap{height:178px;position:relative;overflow:hidden;background:#e6e8e4}
+.restaurant-image{display:block;width:100%;height:100%;object-fit:cover}
+.favorite-button{position:absolute;top:11px;right:11px;width:43px;height:43px;border:0;border-radius:50%;background:#17324a66;color:white;font-size:34px;font-weight:300;line-height:1;display:grid;place-items:center;text-shadow:0 1px 4px #0005}
+.favorite-button.is-saved{color:#f57b78;background:white;text-shadow:none}
+.restaurant-info{padding:13px 15px 14px}.restaurant-info h3{font-family:'Playfair Display',serif;font-size:21px;line-height:1.2;margin:0;color:#14355d}
+.restaurant-location{display:flex;gap:9px;align-items:center;margin:6px 0 7px;color:#7b91ad;font-size:14px}
+.restaurant-rating{display:flex;align-items:center;gap:9px;color:#0b7582;font-size:15px}.restaurant-rating strong{font-weight:600}
+.star{font-size:24px;line-height:1;color:var(--gold)}
+.restaurant-note{margin-top:10px;padding:9px 10px;border-radius:9px;background:#e6f2ed;color:#246f73;font-size:12px;display:flex;align-items:center;gap:8px}
+.restaurant-note span{font-size:17px}.data-note{font-size:11px;color:#8493a2;margin:9px 0 0}
+.empty-state{border:1px dashed #cbd9e0;border-radius:15px;padding:32px 15px;text-align:center;color:var(--navy)}
+.empty-state>span{display:block;font-size:35px;margin-bottom:10px}.empty-state strong{font-family:'Playfair Display',serif;font-size:21px}
+.empty-state p{color:var(--muted);font-size:13px}.empty-state button{background:var(--teal);color:white;border:0;border-radius:9px;padding:10px 14px}
+.bottom-nav{position:fixed;z-index:20;left:50%;bottom:0;transform:translateX(-50%);width:min(100%,900px);height:86px;padding:9px 15px max(9px,env(safe-area-inset-bottom));display:flex;justify-content:space-around;align-items:center;background:rgba(255,253,249,.97);border-top:1px solid #e4e8e8;box-shadow:0 -5px 20px #12345d0a;backdrop-filter:blur(16px)}
+.nav-item{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;border:0;background:transparent;color:#8094ad;font-size:13px;font-weight:500;padding:2px}
+.nav-item svg{width:31px;height:31px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-item.active{color:#08798b}.nav-item.active:first-child svg{fill:currentColor;stroke:currentColor}
+@media(min-width:901px){.app-shell{padding-left:32px;padding-right:32px}.hero{height:430px}.hero-copy{left:9%;right:9%}.location-actions{grid-template-columns:1fr}.location-card{min-height:83px}.location-copy strong{font-size:20px}.bottom-nav{border-left:1px solid #e4e8e8;border-right:1px solid #e4e8e8}}
+@media(max-width:600px){.app-shell{padding:0 15px 125px}.topbar{height:62px;grid-template-columns:35px 1fr 35px;gap:3px}.icon-button{width:34px;height:40px;padding:4px}.icon-button svg{width:27px;height:27px}.brand{gap:2px}.brand-art{width:52px;height:38px}.brand-wordmark{font-size:22px;letter-spacing:-.95px}.brand-wordmark small{font-size:6px;letter-spacing:1.7px}.hero{height:390px;border-radius:13px}.hero-photo{background-position:center center}.hero-shade{background:linear-gradient(180deg,rgba(255,253,249,0) 0%,rgba(255,253,249,.06) 24%,rgba(255,253,249,.75) 48%,rgba(255,253,249,.98) 100%)}.hero-copy{left:15px;right:15px;bottom:17px}.hero h1{font-size:clamp(36px,8.8vw,48px);letter-spacing:-1.2px}.hero-copy>p{font-size:16px;margin:5px 0 17px}.search-box{height:59px;gap:10px;padding:0 11px;border-radius:15px}.search-box input{font-size:13px}.search-box input::placeholder{font-size:12px}.search-symbol{width:25px;height:25px}.mic-button{width:40px;padding-left:9px}.mic-button svg{width:25px;height:25px}.location-actions{gap:11px;margin:13px 0 35px}.location-card{min-height:80px;padding:11px 13px;gap:12px;border-radius:13px}.location-symbol{width:38px;height:42px}.location-symbol svg{width:27px;height:27px}.location-copy strong{font-size:18px}.location-copy small{font-size:12px}.location-arrow{font-size:31px}.cuisine-section{margin-bottom:39px}.section-heading{margin-bottom:14px}.section-heading h2{font-size:29px}.section-link{font-size:13px}.cuisine-list{gap:8px}.cuisine-tile{min-height:105px;border-radius:13px;gap:7px;font-size:12px}.cuisine-illustration{width:57px;height:57px;font-size:36px}.featured-heading h2{font-size:29px}.featured-heading p{font-size:12px;line-height:1.45;max-width:290px}.restaurant-scroller{grid-auto-columns:minmax(260px,78%);gap:12px;margin-right:-15px;padding-right:15px}.restaurant-image-wrap{height:166px}.restaurant-info{padding:12px}.restaurant-info h3{font-size:20px}.restaurant-location{font-size:13px}.restaurant-note{font-size:11px}.bottom-nav{height:82px;padding-left:10px;padding-right:10px}.nav-item{font-size:12px}.nav-item svg{width:30px;height:30px}}
+@media(max-width:360px){.app-shell{padding-left:11px;padding-right:11px}.brand-art{width:46px}.brand-wordmark{font-size:18px}.hero{height:370px}.hero h1{font-size:40px}.hero-copy>p{font-size:14px}.location-copy strong{font-size:16px}.cuisine-list{gap:5px}.cuisine-tile{font-size:11px}.cuisine-illustration{width:49px;height:49px;font-size:32px}.restaurant-scroller{grid-auto-columns:85%}}
