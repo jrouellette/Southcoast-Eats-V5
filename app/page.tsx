@@ -38,7 +38,7 @@ export default function HomePage() {
       </header>
 
       <section className="hero" id="top" aria-label="Newport Pell Bridge at sunset">
-        <div className="hero-brand"><span className="hero-brand-word">Southcoast</span><span className="brand-wave"><i></i><b></b></span><span className="brand-eats">E A T S</span></div>
+        <h1 className="hero-tagline">Find Your Next Favorite</h1>
         <div className="location-search">
           <span className="pin" aria-hidden="true">●</span><button className="location-choice" onClick={() => setQuery("")}>Newport, RI <span>⌄</span></button>
           <label className="search-label" htmlFor="restaurant-search"><span aria-hidden="true">⌕</span><input id="restaurant-search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search restaurants or towns" /></label>
