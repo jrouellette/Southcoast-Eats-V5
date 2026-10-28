@@ -30,8 +30,12 @@ export default function HomePage() {
     <main className="app-shell">
       <header className="topbar">
         <a className="brand" href="#top" aria-label="Southcoast Eats home">
-          <span className="brand-word">Southcoast</span><span className="brand-wave"><i></i><b></b></span><span className="brand-eats">E A T S</span>
-        </a>
+  <img
+    className="brand-logo"
+    src="/images/southcoast-eats-logo.png"
+    alt="Southcoast Eats"
+  />
+</a>
         <nav className="desktop-nav" aria-label="Main navigation">
           {["Home", "Search", "Saved", "More"].map((item) => <button key={item} className={activeTab === item ? "nav-active" : ""} onClick={() => { setActiveTab(item); if (item === "Search") document.getElementById("restaurant-search")?.focus(); }}>{item}</button>)}
         </nav>
