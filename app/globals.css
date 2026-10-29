@@ -42,4 +42,16 @@
     max-width: 340px;
     font-size: 32px;
   }
+} 
+/*
+Southcoast Eats V5.0 — approved color palette update
+Add this block at the VERY BOTTOM of app/globals.css.
+It intentionally overrides only the palette variables; all existing layout and styling stay intact.
+*/
+
+:root {
+  --sage: #6F9E73;
+  --yellow: #F2C84B;
+  --gold: #F2C84B;
+  --coral: #E86F4A;
 }
