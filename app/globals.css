@@ -55,3 +55,141 @@ It intentionally overrides only the palette variables; all existing layout and s
   --gold: #F2C84B;
   --coral: #E86F4A;
 }
+/*
+Southcoast Eats V5.0 — homepage layout update
+Keeps the existing farm/coastal image and approved color palette.
+*/
+.topbar {
+  display: none;
+}
+.hero {
+  height: 390px;
+  border-radius: 0 0 16px 16px;
+  background-image: url('/images/southcoast-farm-coastal-hero.jpg');
+  background-position: center 54%;
+  box-shadow: none;
+}
+.hero-wordmark {
+  position: absolute;
+  top: 28px;
+  left: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  text-decoration: none;
+  line-height: 0.98;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  letter-spacing: -1.2px;
+  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.22);
+}
+.hero-wordmark-main {
+  color: var(--blue);
+  font-size: clamp(30px, 4vw, 48px);
+}
+.hero-wordmark-accent {
+  color: var(--yellow);
+  font-size: clamp(28px, 3.6vw, 42px);
+  letter-spacing: -0.5px;
+}
+.search-area {
+  background: var(--cream);
+  padding: 16px 0 0;
+}
+.location-search {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  transform: none;
+  margin: 0 auto;
+  width: min(760px, calc(100% - 36px));
+  height: 58px;
+}
+.desktop-nav-row {
+  display: flex;
+  justify-content: flex-end;
+  min-height: 0;
+}
+.desktop-nav-row .desktop-nav {
+  padding-top: 8px;
+}
+@media (min-width: 601px) {
+  .app-shell {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .search-area {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+  .desktop-nav-row,
+  .cuisine-grid,
+  .section-block,
+  .site-footer {
+    margin-left: 28px;
+    margin-right: 28px;
+  }
+}
+@media (max-width: 900px) {
+  .hero {
+    height: 350px;
+    background-position: center 54%;
+  }
+}
+@media (max-width: 600px) {
+  .app-shell {
+    padding: 0 0 82px;
+  }
+  .hero {
+    height: 350px;
+    border-radius: 0;
+    background-position: 54% center;
+  }
+  .hero-wordmark {
+    top: 22px;
+    left: 18px;
+    letter-spacing: -0.8px;
+  }
+  .hero-wordmark-main {
+    font-size: 34px;
+  }
+  .hero-wordmark-accent {
+    font-size: 31px;
+  }
+  .search-area {
+    padding: 14px 0 0;
+  }
+  .location-search {
+    width: calc(100% - 24px);
+    height: 54px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .location-choice {
+    font-size: 14px;
+  }
+  .search-label {
+    margin-left: 3px;
+    padding-left: 8px;
+    gap: 5px;i
+  }
+  .search-label input {
+    font-size: 12px;
+  }
+  .search-label input::placeholder {
+    color: #7d898c;
+  }
+  .desktop-nav-row {
+    display: none;
+  }
+  .cuisine-grid {
+    margin: 14px 12px 23px;
+  }
+  .section-block {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+}
