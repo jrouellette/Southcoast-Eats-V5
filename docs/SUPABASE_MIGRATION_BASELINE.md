@@ -1,26 +1,33 @@
-# Supabase Migration Baseline Reconciliation
+# Supabase Migration Baseline — V5
 
-## Why this is required
+Verified against project `wlrmaqqxtrlfohleuand` on 2026-10-30. PostgreSQL 17; seven foundation tables are empty. The live schema was compared with `202610250001_initial_schema.sql` and matches the initial schema plus the security changes described below.
 
-The V5 database currently has the schema from `202610250001_initial_schema.sql`, but Supabase's remote migration history was empty at the last audit. Do not replay the initial migration against the existing schema and do not run a remote database reset.
+## Remote migration history
+| Version | Name | State |
+|---|---|---|
+| `202610250001` | (not populated) | Initial schema was already present; history entry was inserted after read-only schema comparison. |
+| `20261030141657` | `202610290001_security_least_privilege` | Security SQL applied through Supabase MCP. |
 
-## Safe reconciliation sequence
+The security migration's remote version is `20261030141657`, but the old repository filename used `202610290001_security_least_privilege.sql`. The canonical repository filename should be `20261030141657_security_least_privilege.sql`. The initial baseline history entry was inserted directly into `supabase_migrations.schema_migrations`, not through standard CLI migration repair, because this is a browser-only workflow. This deviation is documented; do not reset the history or replay the initial schema.
 
-1. Confirm the linked project is `wlrmaqqxtrlfohleuand` (Southcoast-Eats-V5).
-2. Compare the live schema, RLS policies, indexes, triggers, function, and enum definitions with `supabase/migrations/202610250001_initial_schema.sql`.
-3. If and only if the live schema matches that initial migration, use the Supabase CLI migration repair command to mark version `202610250001` as applied:
-   `supabase migration repair 202610250001 --status applied`
-4. Check local and remote history:
-   `supabase migration list`
-5. Preview pending changes:
-   `supabase db push --dry-run`
-6. Review the preview. It should show only intended new migrations, not the initial schema recreation.
-7. Apply only after review:
-   `supabase db push`
-8. Re-run the Supabase security and performance advisors and verify the effective grants, policies, trigger, and indexes.
+## Security model verified
+- RLS is enabled on all seven public tables.
+- `anon` and `authenticated` have SELECT on restaurants, locations, and photos only; RLS restricts reads to published restaurants and associated locations/photos.
+- Authenticated users have SELECT/INSERT/DELETE on favorites, with each policy restricted to `auth.uid() = user_id`.
+- `service_role` has SELECT/INSERT/UPDATE/DELETE on the six restaurant/internal tables, but not favorites.
+- Provider IDs, field sources, and review queue have no client-facing policies (intentional default-deny).
+- `set_updated_at()` is not SECURITY DEFINER and uses `search_path = pg_catalog`.
+- No real restaurant data has been ingested.
 
-Never run `supabase db reset --linked` on this project. That command is destructive.
+## Advisor results
+Security advisor: three informational findings for the internal tables with RLS enabled and no policies; intentional. Performance advisor: eight unused-index notices; database is empty, so reassess after representative data and query patterns exist.
 
-## Current prepared migration
+## Guardrails
+1. Never run `supabase db reset --linked`.
+2. Never replay `202610250001_initial_schema.sql` against this database.
+3. Keep schema changes in versioned migration files and verify after applying.
+4. Do not ingest provider data until access tier, quotas, storage/retention, attribution, and data-combination terms are verified.
+5. Never expose service-role/secret keys in browser code or `NEXT_PUBLIC_*` variables.
 
-`supabase/migrations/202610290001_security_least_privilege.sql` is prepared but should not be applied until the baseline is reconciled and the migration is present in the repository. Review it before applying, particularly the intended service-role access model.
+## Phase 1 boundary
+The database foundation and least-privilege access model are applied and verified. The consumer app is not connected to production data; provider ingestion is not yet authorized or ready. Next: finalize provider compliance and the smallest data-model additions needed for a budget-limited discovery pilot.
